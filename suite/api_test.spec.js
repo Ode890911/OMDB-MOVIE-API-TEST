@@ -51,6 +51,25 @@ describe('OMDb API - The Open Movie Database', () => {
 
   })
 
+  it("uses the i parameter to verify each title on page 1 is accessible via imdbID", async () => {
+
+    let movImdbID;
+    const agent = request.agent(url);
+    agent.get(`?s=${movieToSearch}&page=1&type=movie&apikey=${myApik}`)
+      .end((err, res) => {
+        const movies = res.body['Search']
+        movies.forEach(async (movie) => {
+          movImdbID = movie['imdbID'];
+          agent.get(`?i=${movImdbID}&type=movie&page=1&apikey=${myApik}`)
+            .end((err, res) => {
+            let movieObj = res.body
+           expect(movieObj).to.haveOwnProperty('Title');
+          expect(movieObj['Title']).to.not.be.null;
+            })
+        })
+      })
+  });
+
   //5. Add a test that verifies none of the poster links on page 1 are broken
   it("verifies none of the poster links on page 1 are broken", async () => {
 
@@ -59,8 +78,8 @@ describe('OMDb API - The Open Movie Database', () => {
 
     for (let mov of movies) {
       let posterLink = mov['Poster']
-      const agent = request.agent(posterLink);
-      let posterLinkRes = await agent.get(posterLink)
+    const agent = request.agent(posterLink);
+    let posterLinkRes = await agent.get(posterLink)
       expect(posterLinkRes.statusCode).not.to.equal(500)
     }
   });
