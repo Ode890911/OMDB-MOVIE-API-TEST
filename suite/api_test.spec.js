@@ -19,8 +19,8 @@ const myApik = process.env.API_KEY
 describe('OMDb API - The Open Movie Database', () => {
 
   it('test no api key all', async () => {
-    const response = await help.makeReq(url, '?s=star')
-    expect(response.statusCode).to.equal(401)
+    const response = await help.makeReq(url, '?s=star');
+    expect(response.statusCode).to.equal(401);
     expect(response.body).to.deep.equal({ "Response": "False", "Error": "No API key provided." });
   })
 
